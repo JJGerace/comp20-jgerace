@@ -1,1 +1,18 @@
 /* Dummy css file */
+
+/*.software:before {
+    content:url(software.png);*
+}*/
+/*.software{
+    width:130px;
+    height:240px;
+    background:url(software.png) 0 0px;
+}*/
+@media (max-width:1200px) {
+    .software{
+        width:130px;
+        height:240px;
+        background:url(software.png) 0 0px;
+    }
+
+}
