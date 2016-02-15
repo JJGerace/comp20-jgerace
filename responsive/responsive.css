@@ -1,18 +1,24 @@
-/* Dummy css file */
+/* CSS file with responsive design */
 
-/*.software:before {
-    content:url(software.png);*
-}*/
-/*.software{
-    width:130px;
-    height:240px;
-    background:url(software.png) 0 0px;
-}*/
-@media (max-width:1200px) {
+@media (max-width: 1000px) {
     .software{
         width:130px;
         height:240px;
-        background:url(software.png) 0 0px;
+        background:url(software.png) 384px 0px;
+    }
+}
+@media (min-width: 1001px) and (max-width: 1100px) {
+    .software{
+        width:130px;
+        height:240px;
+        background:url(software.png) 512px 0px;
     }
 
+}
+@media (min-width: 1101px) {
+    .software{
+        width:130px;
+        height:240px;
+        background:url(software.png) 0px 0px;
+    }
 }
