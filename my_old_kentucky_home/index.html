@@ -17,17 +17,17 @@
     var video = document.getElementById("music_video");
     var lyrics = document.getElementById("lyrics");
     video.addEventListener("timeupdate", function() {
-    if (video.currentTime > 7 && video.currentTime <= 15) {
-        lyrics.innerHTML ="<h3>The sun shines bright in My Old Kentucky Home,</h3>";
+    if (video.currentTime > 9 && video.currentTime <= 15) {
+        lyrics.innerHTML ='<h3>The sun shines bright in My Old Kentucky Home,</h3><img src="sun.png" alt="Spongebob in the Sun" height="353" width = "475">';
     }
     else if (video.currentTime > 15 && video.currentTime <= 22) {
-        lyrics.innerHTML ="<h3>'Tis summer, the people are gay;</h3>";
+        lyrics.innerHTML ='<h3>\'Tis summer, the people are gay;</h3><img src="spongebob_happy.jpg" alt="Spongebob and Rainbow" height="600" width = "800">';
     }
     else if (video.currentTime > 22 && video.currentTime <= 28) {
-        lyrics.innerHTML ="<h3>The corn-top's ripe and the meadow's in the bloom</h3>";
+        lyrics.innerHTML ='<h3>The corn-top\'s ripe and the meadow\'s in the bloom</h3><img src="kelpForest.jpg" alt="Kelp Forest" height="751" width = "996">';
     }
     else if (video.currentTime > 28 && video.currentTime <= 35) {
-        lyrics.innerHTML ="<h3>While the birds make music all the day</h3>";
+        lyrics.innerHTML ='<h3>While the birds make music all the day</h3><img src="Bird.jpg" alt="A Happy Bird" height="360" width = "480">';
     }
     else if (video.currentTime > 35 && video.currentTime <= 42) {
         lyrics.innerHTML ="<h3>The young folks roll on the little cabin floor,</h3>";
@@ -42,7 +42,7 @@
         lyrics.innerHTML ="<h3>Then My Old Kentucky Home, good night!</h3>";
     }
     else if (video.currentTime > 63 && video.currentTime <= 64) {
-        lyrics.innerHTML ="<h3>(chorus)</h3>";
+        lyrics.innerHTML ='<h3>(chorus)</h3><img src="MoreCowbell.jpg" alt="Ringing a Cowbell" height="504" width = "672">';
     }
     else if (video.currentTime > 64 && video.currentTime <= 69) {
         lyrics.innerHTML ="<h3>Weep no more my lady</h3>";
@@ -57,7 +57,7 @@
         lyrics.innerHTML ="<h3>For My Old Kentucky Home</h3>";
     }
     else if (video.currentTime > 84 && video.currentTime <= 93) {
-        lyrics.innerHTML ="<h3>For My Old Kentucky Home, far away</h3>";
+        lyrics.innerHTML ='<h3>For My Old Kentucky Home, far away</h3><img src="spongebobBye.jpeg" alt="Spongebob Says Goodbye" height="413" width = "500">';
     }
 
     else {
