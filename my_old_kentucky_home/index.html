@@ -14,7 +14,18 @@
 <div id="lyrics"></div>
 
 <script>
-	// Complete this section and create a CSS file named style.css
+	var video = document.getElementById("music_video");
+	var lyrics = document.getElementById("lyrics");
+	video.addEventListener("timeupdate", function() {
+            if (video.currentTime >= 8 &&) {
+			lyrics.innerHTML ="<h3>This will not work on FireFox...Sorry!</h3>";
+		}
+		else {
+			lyrics.innerHTML ="";
+		}
+		}, false);
+
+
 </script>
 </body>
-</html>	
+</html>
