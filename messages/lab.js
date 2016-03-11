@@ -15,8 +15,7 @@ function parse () {
 
 function printJSONdata (arrData) {
     elem = document.getElementById("messages");
-    //elem.innerHTML += "<p>" arrData[1]["content"] + "</p>";
-    //elem.innerhtml += "<p>train arriving at " +  parsedobjects[count]["platformkey"] + " in " + parsedobjects[count]["timeRemaining"] + "</p>";
-    elem.innerHTML += "<p>train arriving at " +  arrData[1]["content"] + "</p>";
-
+    for (var i = 0; i < arrData.length; i++) {
+        elem.innerHTML += "<p>" + arrData[i]["content"] + " - " + arrData[i]["username"] + "</p>";
+    }
 }
