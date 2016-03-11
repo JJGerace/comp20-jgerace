@@ -1,1 +1,5 @@
-/* Your CSS here... */
+body {
+    margin-left 10%;
+    margin-right 10%
+    background-color: #d5e3f2;
+}
