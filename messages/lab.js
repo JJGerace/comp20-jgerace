@@ -13,8 +13,10 @@ function parse () {
     req.send();
 }
 
-function printJSONdata(arrData) {
-    console.log("worked");
+function printJSONdata (arrData) {
     elem = document.getElementById("messages");
-    elem.innerHTML = "<p>Worked!</p>";
+    //elem.innerHTML += "<p>" arrData[1]["content"] + "</p>";
+    //elem.innerhtml += "<p>train arriving at " +  parsedobjects[count]["platformkey"] + " in " + parsedobjects[count]["timeRemaining"] + "</p>";
+    elem.innerHTML += "<p>train arriving at " +  arrData[1]["content"] + "</p>";
+
 }
