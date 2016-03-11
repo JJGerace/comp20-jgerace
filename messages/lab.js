@@ -15,4 +15,6 @@ function parse () {
 
 function printJSONdata(arrData) {
     console.log("worked");
+    elem = document.getElementById("messages");
+    elem.innerHTML = "<p>Worked!</p>";
 }
