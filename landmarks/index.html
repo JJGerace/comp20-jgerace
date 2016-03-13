@@ -13,7 +13,7 @@
 	    var req = new XMLHttpRequest();
 	    var me = new google.maps.LatLng(lat, lng);
 	    var myOptions = {
-		zoom: 13, // The larger the zoom number, the bigger the zoom
+		zoom: 13,
 	        center: me,
 	        mapTypeId: google.maps.MapTypeId.ROADMAP
 	    };
@@ -27,6 +27,7 @@
             var nearLng = -1
             var nearDist= -1;
 
+            //get location, then pass control to postLocation();
 	    function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                 if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
@@ -42,6 +43,7 @@
 
 	    }
 
+i           //give a POST XMLHttpRequest, then send it and give control to construct map
             function postLocation() {
                 req = new XMLHttpRequest();
                 req.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
@@ -52,6 +54,10 @@
                 login = login + "lng=" + lng;
                 req.send(login);
             }
+            /* Apply an add function over every person and every landmark
+             * Keep track of the closest land mark's details
+             * Then, render yourself and make a polyline to nearest landmark
+             */
             function constructMap () {
                 if (req.readyState == 4 && req.status == 200) {
                     raw = req.responseText;
@@ -85,9 +91,10 @@
                     google.maps.event.addListener(marker, 'click', function() {
 		        marker.info.open(map, marker);
 		    });
-
+                }
             }
 
+            //apply higher order function
             function applyArr(arr, func) {
                 for (i = 0; i < arr.length; i++) {
                     func(arr[i]);
@@ -203,8 +210,6 @@
                 path.setMap(map);
 
             }
-
-        }
         </script>
     </head>
 
