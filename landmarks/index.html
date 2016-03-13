@@ -110,8 +110,8 @@
             }
 
             function addLandmark(l) {
-                var lLat     = l["geometry"]["coordinates"][0];
-                var lLng     = l["geometry"]["coordinates"][1];
+                var lLng     = l["geometry"]["coordinates"][0];
+                var lLat     = l["geometry"]["coordinates"][1];
                 var distFromMe = haversineDistance(lat, lng, lLat, lLng, true);
 
                 if (distFromMe > 1.0) {
@@ -120,6 +120,24 @@
 
                 var lName    = l["properties"]["Location_Name"];
                 var lDetails = l["properties"]["Details"];
+
+                var lLoc = new google.maps.LatLng(lLat, lLng);
+                var lInfoWindow = new google.maps.InfoWindow({
+                    content: "" + lDetails
+                });
+
+                var lMarker = new google.maps.Marker({
+                    map: map,
+                    position: lLoc,
+                    clickable: true,
+                    icon: 'renpar.png',
+                    info: lInfoWindow
+                });
+
+                google.maps.event.addListener(lMarker, 'click', function() {
+		    		lMarker.info.open(map, lMarker);
+				});
+
 
             }
 
