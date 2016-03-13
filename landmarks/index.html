@@ -22,6 +22,10 @@
 	    var infowindow = new google.maps.InfoWindow();
             var handle = "MAE_DANIELS";
 
+            var nearLocation_Name = "";
+            var nearDetails = "";
+            var nearDist    = -1;
+
 	    function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
                 if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
@@ -72,6 +76,7 @@
 		    });
 
                     applyArr(data.people, addPerson);
+                    applyArr(data.landmarks, addLandmark);
             }
 
             function applyArr(arr, func) {
@@ -102,6 +107,20 @@
                 google.maps.event.addListener(pMarker, 'click', function() {
 		    		pMarker.info.open(map, pMarker);
 				});
+            }
+
+            function addLandmark(l) {
+                var lLat     = l["geometry"]["coordinates"][0];
+                var lLng     = l["geometry"]["coordinates"][1];
+                var distFromMe = haversineDistance(lat, lng, lLat, lLng, true);
+
+                if (distFromMe > 1.0) {
+                    return;
+                }
+
+                var lName    = l["properties"]["Location_Name"];
+                var lDetails = l["properties"]["Details"];
+
             }
 
             /*function taken, with small modifications from Nathan Lippi on
