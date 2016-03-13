@@ -1,3 +1,7 @@
+/*CSS used without modification from Professor Ming's map example on github
+ * (https://github.com/tuftsdev/WebProgramming/blob/gh-pages/examples/google_maps/geolocation_map_style.css)
+ * because it is simple, to the point, and already working for a similar example.
+ */
 html {
 	height: 100%;
 	font-family: Helvetica, "Helvetica Neue", Arial, sans-serif;
