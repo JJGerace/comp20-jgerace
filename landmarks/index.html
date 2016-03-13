@@ -23,8 +23,9 @@
             var handle = "MAE_DANIELS";
 
             var nearLocation_Name = "";
-            var nearDetails = "";
-            var nearDist    = -1;
+            var nearLat = -1;
+            var nearLng = -1
+            var nearDist= -1;
 
 	    function init() {
 		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
@@ -55,13 +56,23 @@
                 if (req.readyState == 4 && req.status == 200) {
                     raw = req.responseText;
                     data = JSON.parse(raw);
-                    console.log(data);
+
+                    applyArr(data.people, addPerson);
+                    applyArr(data.landmarks, addLandmark);
 
                     me = new google.maps.LatLng(lat, lng);
                     map.panTo(me);
-                    infoWindow = new google.maps.InfoWindow({
-                        content: '<b>' + handle + '</b>'
-                    });
+                    if (nearDist == -1) {
+                        infoWindow = new google.maps.InfoWindow({
+                            content: '<b>' + handle + '<br>Closest Landmark: None Available' + '</b>'
+                        });
+                    } else {
+                        infoWindow = new google.maps.InfoWindow({
+                            content: '<b>' + handle + '<br>Closest Landmark: ' + nearLocation_Name +'<br>Distance to Landmark: ' + nearDist + 'mi</b>'
+                        });
+                        renderPolyline();
+
+                    }
 
                     marker = new google.maps.Marker({
                         map: map,
@@ -75,8 +86,6 @@
 		        marker.info.open(map, marker);
 		    });
 
-                    applyArr(data.people, addPerson);
-                    applyArr(data.landmarks, addLandmark);
             }
 
             function applyArr(arr, func) {
@@ -113,13 +122,13 @@
                 var lLng     = l["geometry"]["coordinates"][0];
                 var lLat     = l["geometry"]["coordinates"][1];
                 var distFromMe = haversineDistance(lat, lng, lLat, lLng, true);
-
-                if (distFromMe > 1.0) {
-                    return;
-                }
-
                 var lName    = l["properties"]["Location_Name"];
                 var lDetails = l["properties"]["Details"];
+
+                if (distFromMe > 1.0) {
+                    switchIfClosest(distFromMe, lName, lDetails);
+                    return;
+                }
 
                 var lLoc = new google.maps.LatLng(lLat, lLng);
                 var lInfoWindow = new google.maps.InfoWindow({
@@ -138,7 +147,22 @@
 		    		lMarker.info.open(map, lMarker);
 				});
 
+                switchIfClosest(distFromMe, lLat, lLng, lName);
+            }
 
+            function switchIfClosest(lDist, lLat, lLng, lName) {
+                if (nearDist == -1) {
+                    nearDist = lDist;
+                    nearLocation_Name = lName;
+                    nearLat = lLat;
+                    nearLng = lLng;
+                }
+                else if (lDist < nearDist) {
+                    nearDist = lDist;
+                    nearLocation_Name = lName;
+                    nearLat = lLat;
+                    nearLng = lLng;
+                }
             }
 
             /*function taken, with small modifications from Nathan Lippi on
@@ -164,6 +188,22 @@
 		if(isMiles) d /= 1.60934;
                 return d;
 	    }
+
+            function renderPolyline() {
+                var nearLandmarkCoordinates = [
+                    {lat: lat, lng: lng},
+                    {lat: nearLat, lng: nearLng}];
+
+                var path = new google.maps.Polyline({
+                    path: nearLandmarkCoordinates,
+                    strokeColor: '#3D96CF',
+                    strokeWeight: 2
+                });
+
+                path.setMap(map);
+
+            }
+
         }
         </script>
     </head>
