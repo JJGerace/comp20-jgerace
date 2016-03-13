@@ -1,69 +1,87 @@
 <!DOCTYPE html>
 
 <html>
+    <head>
+        <title>Geolocation Map Example</title>
+	<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
+	<link rel="stylesheet" href="style.css" />
 
-	<head>
-		<title>Geolocation Map Example</title>
-		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-		<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=true"></script>
-		<link rel="stylesheet" href="style.css" />
-		
-		<script>
-			var myLat = 0;
-			var myLng = 0;
-			var request = new XMLHttpRequest();
-			var me = new google.maps.LatLng(myLat, myLng);
-			var myOptions = {
-						zoom: 13, // The larger the zoom number, the bigger the zoom
-						center: me,
-						mapTypeId: google.maps.MapTypeId.ROADMAP
-					};
-			var map;
-			var marker;
-			var infowindow = new google.maps.InfoWindow();
-			
-			function init()
-			{
-				map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
-				getMyLocation();
-			}
-			
-			function getMyLocation() {
-				if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
-					navigator.geolocation.getCurrentPosition(function(position) {
-						myLat = position.coords.latitude;
-						myLng = position.coords.longitude;
-						renderMap();
-					});
-				}
-				else {
-					alert("Geolocation is not supported by your web browser.  What a shame!");
-				}
-			}
-			function renderMap()
-			{
-				me = new google.maps.LatLng(myLat, myLng);
-				
-				// Update map and go there...
-				map.panTo(me);
-	
-				// Create a marker
-				marker = new google.maps.Marker({
-					position: me,
-					title: "Here I Am!"
-				});
-				marker.setMap(map);
-					
-				// Open info window on click of marker
-				google.maps.event.addListener(marker, 'click', function() {
-					infowindow.setContent(marker.title);
-					infowindow.open(map, marker);
-				});
-			}
-		</script>
-	</head>
-	
-	<body onload="init()">
-		<div id="map_canvas"></div>
-	</body>
+	<script>
+	    var myLat = 0;
+	    var myLng = 0;
+	    var request = new XMLHttpRequest();
+	    var me = new google.maps.LatLng(myLat, myLng);
+	    var myOptions = {
+		zoom: 13, // The larger the zoom number, the bigger the zoom
+	        center: me,
+	        mapTypeId: google.maps.MapTypeId.ROADMAP
+	    };
+	    var map;
+	    var marker;
+	    var infowindow = new google.maps.InfoWindow();
+            handle = "MAE_DANIELS";
+
+	    function init() {
+		map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+                if (navigator.geolocation) { // the navigator.geolocation object is supported on your browser
+		    navigator.geolocation.getCurrentPosition(function(position) {
+		        myLat = position.coords.latitude;
+			myLng = position.coords.longitude;
+                        postLocation (myLat, myLng);
+			renderMap();
+		    });
+		}
+		else {
+		    alert("Geolocation is not supported by your web browser.  What a shame!");
+		}
+
+	    }
+
+	    function renderMap() {
+	        me = new google.maps.LatLng(myLat, myLng);
+
+		// Update map and go there...
+		map.panTo(me);
+
+		// Create a marker
+		marker = new google.maps.Marker({
+		    position: me,
+	            title: "Here I Am!"
+		});
+		marker.setMap(map);
+
+		// Open info window on click of marker
+		google.maps.event.addListener(marker, 'click', function() {
+		    infowindow.setContent(marker.title);
+		    infowindow.open(map, marker);
+		});
+	    }
+            function postLocation(lat, lng) {
+                console.log(lat);
+                console.log(lng);
+                req = new XMLHttpRequest();
+                req.open("POST", "https://defense-in-derpth.herokuapp.com/sendLocation", true);
+                req.onreadystatechange = parseLocData;
+                req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                login = "login=" + "MAE_DANIELS" + "&";
+                login = login + "lat=" + lat + "&";
+                login = login + "lng=" + lng;
+                req.send(login);
+
+            }
+            function parseLocData () {
+                if (req.readyState == 4 && req.status == 200) {
+                    raw = req.responseText;
+                    data = JSON.parse(raw);
+                    console.log(data);
+                }
+            }
+
+        </script>
+    </head>
+
+    <body onload="init()">
+        <div id="map_canvas"></div>
+    </body>
 </html>
