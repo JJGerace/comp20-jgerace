@@ -55,16 +55,20 @@
 
                     me = new google.maps.LatLng(lat, lng);
                     map.panTo(me);
-                    marker = new google.maps.Marker({
-                        position: me,
-                        title: "Aqui soy!",
-                        icon: 'paragon.png'
+                    infoWindow = new google.maps.InfoWindow({
+                        content: '<b>' + handle + '</b>'
                     });
-                    marker.setMap(map);
+
+                    marker = new google.maps.Marker({
+                        map: map,
+                        position: me,
+                        clickable: true,
+                        icon: 'paragon.png',
+                        info: infoWindow
+                    });
 
                     google.maps.event.addListener(marker, 'click', function() {
-		        infowindow.setContent(marker.title);
-		        infowindow.open(map, marker);
+		        marker.info.open(map, marker);
 		    });
 
                 }
