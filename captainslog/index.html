@@ -11,7 +11,7 @@
             function reload() {
                 output = "";
                 for (key in localStorage) {
-                    output = "<p>" + key + " - " + localStorage[key] + "</p>\n" + output;
+                    output = "<p>" + localStorage[key] + "</p>\n" + output;
                 }
                 $("#log").html(output);
             }
@@ -38,9 +38,11 @@
                     var log_string = m + " " + d + " " + t_h + ":" + t_m + ":" + t_s + " " + y;
                     return log_string;
                 }
-                //execute only when enter is hit
+
+                //when enter key is pressed, save the text box to localstorage and reload
                 if (event.which == enterKey) {
-                    localStorage[timeStamp()] = $("#msg").val();
+                    var log = timeStamp() + " - " + $("#msg").val();
+                    localStorage[new Date().getTime()] = log;
                     reload();
                 }
             });
