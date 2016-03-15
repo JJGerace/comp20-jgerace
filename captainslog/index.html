@@ -15,31 +15,45 @@
         $(function() {
             var enterKey = 13;
             $("#msg").keypress(function (event) {
-                if (event.which == enterKey) {
-                    var timeStamp = timeStamp();
-                    console.log(timeStamp());
+                function timeStamp() {
+                    var now = new Date();
+                    var m_num = now.getMonth();
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var m = monthNames[m_num];
 
-                    console.log($("#msg").val());
+                    var d = now.getDate();
+                    var t_h = now.getHours();
+                    var t_m = now.getMinutes();
+                    var t_s = now.getSeconds();
+                    var y = now.getFullYear();
+
+                    var log_string = m + " " + d + " " + t_h + ":" + t_m + ":" + t_s + " " + y;
+                    return log_string;
+                }
+
+                function reload() {
+                    console.log("NEW LOG COMING IN");
+                    output = "";
+                    for (key in localStorage() {
+                        output = output + "<p>" + localStorage[key] + "</p>\n";
+                    }
+                    console.log(output);
+                }
+                function store(msg) {
+                    localStorage[timeStamp()] = msg;
+                    reload();
+                }
+
+                reload();
+
+                if (event.which == enterKey) {
+                    store( $("#msg").val());
+                    //var message = timeStamp() + " - " +  $("#msg").val();
                 }
             });
-
-            function timeStamp() {
-                var now = new Date();
-                var m_num = now.getMonth();
-                var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                var m = monthNames[m_num];
-
-                var d = now.getDate();
-                var t_h = now.getHours();
-                var t_m = now.getMinutes();
-                var t_s = now.getSeconds();
-                var y = now.getFullYear();
-
-                var log_string = m + " " + d + " " + t_h + ":" + t_m + ":" + t_s + " " + y;
-                return log_string;
-            }
         })
+
     </script>
 </head>
 
