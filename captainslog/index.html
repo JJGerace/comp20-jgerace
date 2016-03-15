@@ -6,14 +6,21 @@
     <title>Captain's Log</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
     <script>
-        /*Need:
-           *Month in text
-           *Day of the month
-           *time of the day
-           *year
-        */
         $(function() {
+            //reload from local storage
+            function reload() {
+                output = "";
+                for (key in localStorage) {
+                    output = "<p>" + key + " - " + localStorage[key] + "</p>\n" + output;
+                }
+                $("#log").html(output);
+            }
+
+            //reload when page loads
             var enterKey = 13;
+            reload();
+
+            //when you hit a key
             $("#msg").keypress(function (event) {
                 function timeStamp() {
                     var now = new Date();
@@ -31,25 +38,10 @@
                     var log_string = m + " " + d + " " + t_h + ":" + t_m + ":" + t_s + " " + y;
                     return log_string;
                 }
-
-                function reload() {
-                    console.log("NEW LOG COMING IN");
-                    output = "";
-                    for (key in localStorage() {
-                        output = output + "<p>" + localStorage[key] + "</p>\n";
-                    }
-                    console.log(output);
-                }
-                function store(msg) {
-                    localStorage[timeStamp()] = msg;
-                    reload();
-                }
-
-                reload();
-
+                //execute only when enter is hit
                 if (event.which == enterKey) {
-                    store( $("#msg").val());
-                    //var message = timeStamp() + " - " +  $("#msg").val();
+                    localStorage[timeStamp()] = $("#msg").val();
+                    reload();
                 }
             });
         })
