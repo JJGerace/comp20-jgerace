@@ -76,8 +76,6 @@
                         infoWindow = new google.maps.InfoWindow({
                             content: '<b>' + handle + '<br>Closest Landmark: ' + nearLocation_Name +'<br>Distance to Landmark: ' + nearDist + 'mi</b>'
                         });
-                        renderPolyline();
-
                     }
 
                     marker = new google.maps.Marker({
@@ -90,6 +88,7 @@
 
                     google.maps.event.addListener(marker, 'click', function() {
 		        marker.info.open(map, marker);
+                        renderPolyline();
 		    });
                 }
             }
@@ -109,7 +108,7 @@
 
                 //don't plot yourself as a different person!
                 if ((pLogin == handle) && (pLat == lat) && (pLng == lng)) {
-                    return
+                    return;
                 }
 
                 var pLoc = new google.maps.LatLng(pLat, pLng);
