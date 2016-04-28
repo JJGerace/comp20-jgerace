@@ -6,16 +6,17 @@
 <body class="" style="margin-right: 8px;">
 <h1>Security Assessment of Checkins</h1>
 
-<p>Prepared by <a>Jacob Gerace</a> 4/27/2016</p>
+<p>Prepared by <a>Jacob Gerace</a> 4/28/2016</p>
 
 <h2>Introduction</h2>
-<p>IntroTextHere</p>
+<p>This document is created to analyze the Checkins web app located at <a href = "http://glacial-cove-91033.herokuapp.com/">http://glacial-cove-91033.herokuapp.com/</a>. This web app takes in the user's information (login, lat, lng) in a POST API and returns other checkins nearby, as well as historic landmarks within one miles. This checkin user data is also available with a GET checkins.json API in json format, and a GET API at the index.html in formatted html. This document's purpose is to analyze the web app's security, and if they exist, how to fix them. Security vulnerabilities reported on if they violate the integrity of the site's user experience, or if they harm the site, or the user itself. Also reported on are poor programming techniques and standards.
+  </p>
 
 <h2>Methodology</h2>
-<p>MethodologyTextHere</p>
+<p>First, blackbox testing using only Postman (or the curl command in the unix terminal) for common vulnerabilities were performed first. Then, the source code of the server was viewed to find additional vulnerabilites that might not be immediately evident; this is also known as whitebox testing.</p>
 
 <h2>Abstract of Findings</h2>
-<p>When the user is assumed to be responsible, the website and underlying code work as promised. However
+<p>When the user is assumed to be responsible, the website and underlying code work as promised. However, this is not a reasonable assumption and user input is assumbed to be malicious to be safe. The website in question will execute potentially malicious code that could crash the website, make it appear undesirable, or steal their data. The website also will display images, text, etc. included in the user's submitted data, this changes the website appearance for other users and is untenable. The website also can expose previous user checkins in some cases. Thankfully these all can be resolved by checking and sanitizing user input, which is simple through use of other code. In addition, the website can be made more secure by design by giving out access codes to allowed users, and requiring those access codes later.
 </p>
 
 <h2>Issues Found</h2>
@@ -67,7 +68,7 @@
     <li><strong>Location:</strong> Found on the Get "/checkins.json" API after whitebox testing and finding that mongodb queries were used without sanitization.</li>
     <li><strong>Severity:</strong> Medium. User data is exposed, which is a different issue for different web apps. It could be High for sites with sensitive data (passwords, credit cards), or medium for sites with non sensitive data (username only). This web app has usernames and coordinates, which on the balance is closer to medium.</li>
     <li><strong>Description:</strong>Navigating to the GET "/checkins.json" API accepts a query string, and the API will return checkins from the login string provided. However, the server naively gives the user input to mongo to look up, and will pass along any operators, for instance the not equals operator "[$ne]". Thus with that operator mongo will return all of the checkins data if you supply an uncommon login string. This is a security risk of exposing past user information. Although the user could also find this info on the regular "/" GET API, it is an issue here in principle, and because the json returned is much simpler to parse and process. User data should never be exposed like this, especially location data.</li>
-    <li><strong>Proof of Vulnerability:</strong>Simply navigate to <a href = "glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz">http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</a> <br>
+    <li><strong>Proof of Vulnerability:</strong>Simply navigate to <a href = "http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz">http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</a> <br>
         note that "zzzzz" could be any string that is unlikely to occur. Note how all of the past checkin data is showed to the user.</li>
     <li><strong>Resolution:</strong> Likewise here, never trust user input. The solution to problem #1 is an option here. Since this problem exists specifically with the "[" and "$" characters, Validator.js <a href="https://github.com/chriso/validator.js">validator.js</a> can also be used to blacklist those characters as opposed to whitelisting alphanumeric characters<br>
         <code>for (s in requests) { s = blacklist(s, ['[', ']', '$']; }</code>
@@ -88,9 +89,9 @@
         </code>
         Together they add a same origin policy exception mentioned in the description. Otherwise the functionality in previous exceptions wouldn't work in the first place as well, so they also speak to this proof.</li>
     <li><strong>Resolution</strong> Two options to resolve this come to mind. First, the web app could whitelist specific domains to have access to the APIs, this would allow cross use of the web app but add a vetting process for the whitelisted domains which will be more reliably trusted than anonymous users. Alternatively, the web app could generate and give unique API keys, and require a valid key upon API usage. This key would be tied to a specific user, which also adds recourse if that user attempts to hack the site. Of the two, the second option is suggested as it allows more broad use of the API, the whitelist vetting process can be too taxing to do manually.<br>
-    Generating API codes is part of cryptography and outside the scope of this document, however, assuming a function exists to check if the codes are valid this is implemented simply:
+        Generating API codes is part of cryptography and outside the scope of this document, however, assuming a function exists to check if the codes are valid this is implemented simply:<br>
     <code>if (request.query.apikey != null &amp;&amp; isValidAPIKey(req.query.apikey)) { //normal API code here } <br>
-        else { response.send("Invalid API Key!"); }</li>
+        else { response.send("Invalid API Key!"); }</code></li>
     </ul>
 </li>
 
