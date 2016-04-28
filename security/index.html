@@ -15,7 +15,8 @@
 <p>MethodologyTextHere</p>
 
 <h2>Abstract of Findings</h2>
-
+<p>When the user is assumed to be responsible, the website and underlying code work as promised. However
+</p>
 
 <h2>Issues Found</h2>
 <ol>
@@ -31,7 +32,7 @@
 
     <li><strong>Resolution:</strong> In some way shape or form, the web app must sanitize user input. Many options for this exist, I would suggest using an extra dependency to only allow alphanumeric characters. I believe this is a good option for this website, as diacritical marks are likely not significant due to how the website is only rendered in english. One such dependency is <a href="https://github.com/chriso/validator.js">validator.js</a>, which when installed and included in a server executing node js code, can reject non alphanumeric characters, including the script tag by the following pseudocode (as we do not assume any specific language used):<br>
         <code>  var valid = true;<br>
-            for(each field s in request) { valid = valid &amp;&amp; isAlphanumeric(s, 'en-US'); }<br>
+            for(s in requests) { valid = valid &amp;&amp; isAlphanumeric(s, 'en-US'); }<br>
             if (valid) {<br>
                 //add data to database, all fields are alphanumeric<br>
             }<br>
@@ -49,8 +50,8 @@
         <li><strong>Proof of Vulnerability:</strong> To prove this point, an image of a beaver was inserted through the POST "/sendLocation" API and viewed with the GET "/" API.
             <code>login=jacobh4x0r&lt;img src = 'https://s-media-cache-ak0.pinimg.com/236x/40/dd/f1/40ddf1b4e1defc4f4d47e27d51a2dc59.jpg'&gt;</code></li>
         <li><strong>Resolution:</strong>This can also be resolved by sanitizing user input, the Validator.js dependency from issue #1 could also be used. Another idea is to excape all characters as per HTML standards. This would mean whatever is written in the POST api fields appears verbatim in the GET "/" API. Here is some sample code to do so for the brackets symbols, which would prevent any html tags. However, a dedicated API like the one in section 1 is less work and is suggested. This was conducted using Blackbox texting, so this is only pseudocode.<br>
-            <code>for(each field s in request) {<br>
-                    for(each character c in s){<br>
+            <code>for(s in requests) {<br>
+                    for(c in s){<br>
                          if(c == '&lt;') { c = &amp;lt; }<br>
                          else if(c== '&gt;') { c = &amp;gt; }
                          }
@@ -63,22 +64,33 @@
 
 <li><p><strong>Exposure of User Data Using Mongo Queries</strong></p></li>
     <ul>
-    <li><strong>Location:</strong> Found on the Get "/checkins.json" API</li>
+    <li><strong>Location:</strong> Found on the Get "/checkins.json" API after whitebox testing and finding that mongodb queries were used without sanitization.</li>
     <li><strong>Severity:</strong> Medium. User data is exposed, which is a different issue for different web apps. It could be High for sites with sensitive data (passwords, credit cards), or medium for sites with non sensitive data (username only). This web app has usernames and coordinates, which on the balance is closer to medium.</li>
     <li><strong>Description:</strong>Navigating to the GET "/checkins.json" API accepts a query string, and the API will return checkins from the login string provided. However, the server naively gives the user input to mongo to look up, and will pass along any operators, for instance the not equals operator "[$ne]". Thus with that operator mongo will return all of the checkins data if you supply an uncommon login string. This is a security risk of exposing past user information. Although the user could also find this info on the regular "/" GET API, it is an issue here in principle, and because the json returned is much simpler to parse and process. User data should never be exposed like this, especially location data.</li>
-    <li><strong>Proof of Vulnerability:</strong>Simply navigate to <a href - "glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz">http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</a> <br>
+    <li><strong>Proof of Vulnerability:</strong>Simply navigate to <a href = "glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz">http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</a> <br>
         note that "zzzzz" could be any string that is unlikely to occur. Note how all of the past checkin data is showed to the user.</li>
-    <li><strong>Resolution:</strong> Likewise here, never trust user input. The solution to problem #1 is an option here. Since this problem exists specifically with the "[" and "$" characters, Validator.js <a href="https://github.com/chriso/validator.js">validator.js</a> can also be used to blacklist those characters as opposed to whitelisting alphanumeric characters</li>
+    <li><strong>Resolution:</strong> Likewise here, never trust user input. The solution to problem #1 is an option here. Since this problem exists specifically with the "[" and "$" characters, Validator.js <a href="https://github.com/chriso/validator.js">validator.js</a> can also be used to blacklist those characters as opposed to whitelisting alphanumeric characters<br>
+        <code>for (s in requests) { s = blacklist(s, ['[', ']', '$']; }</code>
+        Naturally, if a different database is used, all characters that allow operations like this should also be blacklisted.
+    </li>
+
     </ul>
 </li>
 
-<li><p><strong>Exposure of User Data Using Mongo Queries</strong></p>
+<li><p><strong>Unsafe Use of Same-Origin-Policy Exception</strong></p>
     <ul>
-    <li><strong>Location:</strong></li>
-    <li><strong>Severity:</strong></li>
-    <li><strong>Description:</strong> </li>
-    <li><strong>Proof of Vulnerability:</strong></li>
-    <li><strong>Resolution</strong> </li>
+    <li><strong>Location:</strong> Found in the GET "/Checkins API" and the POST "/sendLocation" API during whitebox testing (and implied during blackbox testing).</li>
+    <li><strong>Severity:</strong> Low. The site can be secure without this to all but 0-day exploits, and removing Same-Origin-Policy comes with the tradeoff of not allowing every web app support natively.</li>
+    <li><strong>Description:</strong> Normally, websites have the Same Origin Policy in use. This policy states that a web browser will permit scripts in one page to access another page only if both pages come from the same origin. The checkins and sendLocation APIs disable same origin policy so a third party user can checkin and view checkins. However, this also by design opens up all the previously mentioned </li>
+    <li><strong>Proof of Vulnerability:</strong> Here, the proof is in the pudding, within the afforementioned GET and POST APIs there are two lines of interest
+        <code>response.header("Access-Control-Allow-Origin", "*");<br>
+              response.header("Access-Control-Allow-Headers", "X-Requested-With");
+        </code>
+        Together they add a same origin policy exception mentioned in the description. Otherwise the functionality in previous exceptions wouldn't work in the first place as well, so they also speak to this proof.</li>
+    <li><strong>Resolution</strong> Two options to resolve this come to mind. First, the web app could whitelist specific domains to have access to the APIs, this would allow cross use of the web app but add a vetting process for the whitelisted domains which will be more reliably trusted than anonymous users. Alternatively, the web app could generate and give unique API keys, and require a valid key upon API usage. This key would be tied to a specific user, which also adds recourse if that user attempts to hack the site. Of the two, the second option is suggested as it allows more broad use of the API, the whitelist vetting process can be too taxing to do manually.<br>
+    Generating API codes is part of cryptography and outside the scope of this document, however, assuming a function exists to check if the codes are valid this is implemented simply:
+    <code>if (request.query.apikey != null &amp;&amp; isValidAPIKey(req.query.apikey)) { //normal API code here } <br>
+        else { response.send("Invalid API Key!"); }</li>
     </ul>
 </li>
 
