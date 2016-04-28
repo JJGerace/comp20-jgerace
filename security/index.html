@@ -12,7 +12,7 @@
 <p>IntroTextHere</p>
 
 <h2>Methodology</h2>
-<p>MethodologTextHere</p>
+<p>MethodologyTextHere</p>
 
 <h2>Abstract of Findings</h2>
 
@@ -20,13 +20,40 @@
 <h2>Issues Found</h2>
 
 <ol>
-<li><p><strong>First Entry</strong></p>
 
-<ul>
-<li>Affects GET API</li>
-</ul></li>
-<li><p><strong>Second Entry</strong></p>
-</ul></li>
+<li><p><strong>Cross-Site Scripting</strong></p>
+
+    <ul>
+    <li><strong>Location:</strong> Found on the index checkins page (GET "/" request) after misusing the /sendLocation POST API</li>
+    <li><strong>Severity:</strong> High. XSS attacks allow a foreign entity to inject code on your website which will be run by subsequent users. Malicious code can do any number of terrible things, from something as innocuous as changing the background color to red, to running code that parses the users' localstorage and sends data elsewhere, to crashing the server. Avoid at all costs.</li>
+    <li><strong>Description:</strong> Found this vulnerability while performing black box testing. I know that the POST /sendLocation request takes in data, and that the index.html page renders that data. Any input to output of this form is vulernable to XSS without action on the server, so it was the first thing I checked. It comes from putting malicious javascript in a field sent to the post request within script tags, the script will be run on the client's machine when the same data is displayed on the index page. A screenshot is shown in the next section.</li>
+    <li><strong>Proof of Vulnerability:</strong> To prove this point, the background color was changed to red, a spongebob hacking photo was added, and the header section of the site changed to "hacked!". This used the following js code included in a post field, in 3 separate post requests:<br>
+        <code>login=jacobh4x0r&lt;script&gt;document.body.style.color='red'&lt;/script&gt;</code>
+        <code>login=jacobh4x04&lt;img src='https://cdn.meme.am/instances/500x/56918584.jpg'/</code>
+        <code>login=jacobh4x0r&lt;script&gt;document.getElementsByTagName('h1')[0].innerHTML = &quot;Hacked!&quot;;&lt;/script&gt;</code></li>
+
+    <li><strong>Resolution:</strong> In some way shape or form, the web app must sanitize user input. Many options for this exist, I would suggest using an extra dependency to only allow alphanumeric characters. I believe this is a good option for this website, as diacritical marks are likely not significant due to how the website is only rendered in english. One such dependency is <a href="https://github.com/chriso/validator.js">validator.js</a>, which when installed and included in a server executing node js code, can reject non alphanumeric characters, including the script tag by the following pseudocode:<br>
+        <code>  var valid = true;<br>
+            for(each field s in request) { valid = valid &amp;&amp; isAlphanumeric(s, 'en-US'); }<br>
+            if (valid) {<br>
+                &#9;//add data to database, all fields  are alphanumeric<br>
+            }<br>
+        </code></li>
+
+    </ul>
+</li>
+
+<li><p><strong>MongoDB Data Exposure</strong></p>
+
+    <ul>
+        <li><strong>Location:</strong> </li>
+        <li><strong>Severity:</strong> </li>
+        <li><strong>Description:</strong> </li>
+        <li><strong>Proof of Vulnerability:</strong> </li>
+        <li><strong>Resolution:</strong> </li>
+
+    </ul>
+</li>
 </ol>
 
 <h2>Conclusion</h2>
