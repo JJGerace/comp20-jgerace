@@ -27,32 +27,43 @@
     <li><strong>Location:</strong> Found on the index checkins page (GET "/" request) after misusing the /sendLocation POST API</li>
     <li><strong>Severity:</strong> High. XSS attacks allow a foreign entity to inject code on your website which will be run by subsequent users. Malicious code can do any number of terrible things, from something as innocuous as changing the background color to red, to running code that parses the users' localstorage and sends data elsewhere, to crashing the server. Avoid at all costs.</li>
     <li><strong>Description:</strong> Found this vulnerability while performing black box testing. I know that the POST /sendLocation request takes in data, and that the index.html page renders that data. Any input to output of this form is vulernable to XSS without action on the server, so it was the first thing I checked. It comes from putting malicious javascript in a field sent to the post request within script tags, the script will be run on the client's machine when the same data is displayed on the index page. A screenshot is shown in the next section.</li>
-    <li><strong>Proof of Vulnerability:</strong> To prove this point, the background color was changed to red, a spongebob hacking photo was added, and the header section of the site changed to "hacked!". This used the following js code included in a post field, in 3 separate post requests:<br>
+    <li><strong>Proof of Vulnerability:</strong> To prove this point, the background color was changed to red, and the header section of the site changed to "hacked!". This used the following js code included in a post field, in 2 separate post requests:<br>
         <code>login=jacobh4x0r&lt;script&gt;document.body.style.color='red'&lt;/script&gt;</code>
-        <code>login=jacobh4x04&lt;img src='https://cdn.meme.am/instances/500x/56918584.jpg'/</code>
         <code>login=jacobh4x0r&lt;script&gt;document.getElementsByTagName('h1')[0].innerHTML = &quot;Hacked!&quot;;&lt;/script&gt;</code></li>
 
-    <li><strong>Resolution:</strong> In some way shape or form, the web app must sanitize user input. Many options for this exist, I would suggest using an extra dependency to only allow alphanumeric characters. I believe this is a good option for this website, as diacritical marks are likely not significant due to how the website is only rendered in english. One such dependency is <a href="https://github.com/chriso/validator.js">validator.js</a>, which when installed and included in a server executing node js code, can reject non alphanumeric characters, including the script tag by the following pseudocode:<br>
+    <li><strong>Resolution:</strong> In some way shape or form, the web app must sanitize user input. Many options for this exist, I would suggest using an extra dependency to only allow alphanumeric characters. I believe this is a good option for this website, as diacritical marks are likely not significant due to how the website is only rendered in english. One such dependency is <a href="https://github.com/chriso/validator.js">validator.js</a>, which when installed and included in a server executing node js code, can reject non alphanumeric characters, including the script tag by the following pseudocode (as we do not assume any specific language used):<br>
         <code>  var valid = true;<br>
             for(each field s in request) { valid = valid &amp;&amp; isAlphanumeric(s, 'en-US'); }<br>
             if (valid) {<br>
-                &#9;//add data to database, all fields  are alphanumeric<br>
+                //add data to database, all fields are alphanumeric<br>
             }<br>
         </code></li>
 
     </ul>
 </li>
 
-<li><p><strong>MongoDB Data Exposure</strong></p>
+<li><p><strong>HTML Injection</strong></p>
 
     <ul>
-        <li><strong>Location:</strong> </li>
-        <li><strong>Severity:</strong> </li>
-        <li><strong>Description:</strong> </li>
-        <li><strong>Proof of Vulnerability:</strong> </li>
-        <li><strong>Resolution:</strong> </li>
+        <li><strong>Location:</strong> Also found on the index checkins page (GET "/" request) after misusing the /sendLocation POST API</li>
+        <li><strong>Severity:</strong> Medium. Unlike XSS, at least this inserts HTML elements, which don't immediately run code that can compromise the page's entire integrity. Instead, the user must interact with those malicious elements (like clicking on a link). Still bad, but there's a silver lining.</li>
+        <li><strong>Description:</strong> This is closely related to the XSS vulnerability, and it comes from the same source. This was the next thing checked during the black box testing phase. Whereas XSS results from injection executable code in the POST /sendLocation request, HTML injection results from valid html elements being included in a field in the POST /sendLocation request. When that information is redisplayed when accessing the GET "/" request or navigating to index.html, it poses a security risk. Consider if the elemented inserted contains a link to a malicious website, while maintaining the reputation of the original website. This is why it is particualrly important to avoid this issue for governmental websites, in addition to other sites. <br>After the user leaves the web site, there is no guarantee the following website is safe, and it is assumed otherwise. There are also other considerations, a malicious user could insert an advertisement that raises that user money (which brings legal concerns). In general, it disrupts the design of the website and can ruin user experience.</li>
+        <li><strong>Proof of Vulnerability:</strong> To prove this point, an image of a beaver was inserted through the POST "/sendLocation" API and viewed with the GET "/" API.
+            <code>login=jacobh4x0r&lt;img src = 'https://s-media-cache-ak0.pinimg.com/236x/40/dd/f1/40ddf1b4e1defc4f4d47e27d51a2dc59.jpg'&gt;</code></li>
+        <li><strong>Resolution:</strong>This can also be resolved by sanitizing user input, the Validator.js dependency from issue #1 could also be used. Another idea is to excape all characters as per HTML standards. This would mean whatever is written in the POST api fields appears verbatim in the GET "/" API. Here is some sample code to do so for the brackets symbols, which would prevent any html tags. However, a dedicated API like the one in section 1 is less work and is suggested. This was conducted using Blackbox texting, so this is only pseudocode.<br>
+            <code>for(each field s in request) {<br>
+                    for(each character c in s){<br>
+                         if(c == '&lt;') { c = &amp;lt; }<br>
+                         else if(c== '&gt;') { c = &amp;gt; }
+                         }
+                    }
+            </code>
+        </li>
 
     </ul>
+</li>
+
+<li><p><strong>Exposure of User Data Using </strong></p>
 </li>
 </ol>
 
