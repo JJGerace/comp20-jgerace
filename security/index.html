@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title></title>
+    <title>Security Assessment of Checkins</title>
     <link rel="stylesheet" type="text/css" href="./CheckinsSecurityReportFiles/style.css">
 
 <body class="" style="margin-right: 8px;">
@@ -67,12 +67,12 @@
     </ul>
 </li>
 
-<li><p><strong>Exposure of User Data Using Mongo Queries</strong></p></li>
+<li><p><strong>Exposure of User Data Using Mongo Queries</strong></p>
     <ul>
     <li><strong>Location:</strong> Found on the GET "/checkins.json" API.</li>
     <li><strong>Severity:</strong> Medium. User data is exposed, which is a different issue for different web apps. It could be High for sites with sensitive data (passwords, credit cards), or medium for sites with non sensitive data (username only). This web app has usernames and coordinates, which on the balance is closer to medium.</li>
     <li><strong>Description:</strong> Navigating to the GET "/checkins.json" API requests a query string for the login, and the API will return checkins from the login string provided. However, the server naively gives the user input to mongo to look up, and will pass along any operators. For instance the not equals operator "[$ne]". Thus with that operator mongo will return all of the checkins data if you supply an uncommon login string. This is a security risk for exposing past user information. Although the user could also find this info on the regular "/" GET API, it is an issue here in principle, and because the json returned is much simpler to parse and process. User data should never be exposed like this, especially location data. This was found by examining the source code and determining that mongodb was used unsafely for the Get checkins.json API.</li>
-    <li><strong>Proof of Vulnerability:</strong> Simply navigate to <a href = "http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz">http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</a> <br>
+    <li><strong>Proof of Vulnerability:</strong> Simply navigate to <code>http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</code> <br>
         note that "zzzzz" could be any string that is unlikely to occur. Note how all of the past checkin data is showed to the user:<br>
         <img src = "CheckinsSecurityReportFiles/4-mongovulnerability.png" alt = "Users query exposes extra data from the Mongo database" title = "Users' query exposes extra data from mongodb"/>
     </li>
@@ -82,7 +82,6 @@
     </li>
 
     </ul>
-</li>
 
 <li><p><strong>Unsafe Use of Same-Origin-Policy Exception</strong></p>
     <ul>
