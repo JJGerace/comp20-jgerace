@@ -18,9 +18,7 @@
 
 
 <h2>Issues Found</h2>
-
 <ol>
-
 <li><p><strong>Cross-Site Scripting</strong></p>
 
     <ul>
@@ -63,8 +61,27 @@
     </ul>
 </li>
 
-<li><p><strong>Exposure of User Data Using </strong></p>
+<li><p><strong>Exposure of User Data Using Mongo Queries</strong></p></li>
+    <ul>
+    <li><strong>Location:</strong> Found on the Get "/checkins.json" API</li>
+    <li><strong>Severity:</strong> Medium. User data is exposed, which is a different issue for different web apps. It could be High for sites with sensitive data (passwords, credit cards), or medium for sites with non sensitive data (username only). This web app has usernames and coordinates, which on the balance is closer to medium.</li>
+    <li><strong>Description:</strong>Navigating to the GET "/checkins.json" API accepts a query string, and the API will return checkins from the login string provided. However, the server naively gives the user input to mongo to look up, and will pass along any operators, for instance the not equals operator "[$ne]". Thus with that operator mongo will return all of the checkins data if you supply an uncommon login string. This is a security risk of exposing past user information. Although the user could also find this info on the regular "/" GET API, it is an issue here in principle, and because the json returned is much simpler to parse and process. User data should never be exposed like this, especially location data.</li>
+    <li><strong>Proof of Vulnerability:</strong>Simply navigate to <a href - "glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz">http://glacial-cove-91033.herokuapp.com/checkins.json?login[$ne]=zzzzz</a> <br>
+        note that "zzzzz" could be any string that is unlikely to occur. Note how all of the past checkin data is showed to the user.</li>
+    <li><strong>Resolution:</strong> Likewise here, never trust user input. The solution to problem #1 is an option here. Since this problem exists specifically with the "[" and "$" characters, Validator.js <a href="https://github.com/chriso/validator.js">validator.js</a> can also be used to blacklist those characters as opposed to whitelisting alphanumeric characters</li>
+    </ul>
 </li>
+
+<li><p><strong>Exposure of User Data Using Mongo Queries</strong></p>
+    <ul>
+    <li><strong>Location:</strong></li>
+    <li><strong>Severity:</strong></li>
+    <li><strong>Description:</strong> </li>
+    <li><strong>Proof of Vulnerability:</strong></li>
+    <li><strong>Resolution</strong> </li>
+    </ul>
+</li>
+
 </ol>
 
 <h2>Conclusion</h2>
