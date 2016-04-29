@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>My Old Kentucky Home</title>
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+<h1 id="title">My Old Kentucky Home</h1>
+
+<video src="https://www.cs.tufts.edu/comp/20/my_old_kentucky_home.mp4" id="music_video" controls></video>
+<div id="lyrics"></div>
+
+<script>
+    var video = document.getElementById("music_video");
+    var lyrics = document.getElementById("lyrics");
+    video.addEventListener("timeupdate", function() {
+    if (video.currentTime > 9 && video.currentTime <= 15) {
+        lyrics.innerHTML ='<h3>The sun shines bright in My Old Kentucky Home,</h3><img src="sun.png" alt="Spongebob in the Sun" height="353" width = "475">';
+    }
+    else if (video.currentTime > 15 && video.currentTime <= 22) {
+        lyrics.innerHTML ='<h3>\'Tis summer, the people are gay;</h3><img src="spongebob_happy.jpg" alt="Spongebob and Rainbow" height="600" width = "800">';
+    }
+    else if (video.currentTime > 22 && video.currentTime <= 28) {
+        lyrics.innerHTML ='<h3>The corn-top\'s ripe and the meadow\'s in the bloom</h3><img src="kelpForest.jpg" alt="Kelp Forest" height="751" width = "996">';
+    }
+    else if (video.currentTime > 28 && video.currentTime <= 35) {
+        lyrics.innerHTML ='<h3>While the birds make music all the day</h3><img src="Bird.jpg" alt="A Happy Bird" height="360" width = "480">';
+    }
+    else if (video.currentTime > 35 && video.currentTime <= 42) {
+        lyrics.innerHTML ="<h3>The young folks roll on the little cabin floor,</h3>";
+    }
+    else if (video.currentTime > 42 && video.currentTime <= 49) {
+        lyrics.innerHTML ="<h3>All merry, all happy and bright;</h3>";
+    }
+    else if (video.currentTime > 49 && video.currentTime <= 56) {
+        lyrics.innerHTML ="<h3>By 'n' by hard times comes a knocking at the door,</h3>";
+    }
+    else if (video.currentTime > 56 && video.currentTime <= 63) {
+        lyrics.innerHTML ="<h3>Then My Old Kentucky Home, good night!</h3>";
+    }
+    else if (video.currentTime > 63 && video.currentTime <= 64) {
+        lyrics.innerHTML ='<h3>(chorus)</h3><img src="MoreCowbell.jpg" alt="Ringing a Cowbell" height="504" width = "672">';
+    }
+    else if (video.currentTime > 64 && video.currentTime <= 69) {
+        lyrics.innerHTML ="<h3>Weep no more my lady</h3>";
+    }
+    else if (video.currentTime > 69 && video.currentTime <= 76) {
+        lyrics.innerHTML ="<h3>Oh weep no more today;</h3>";
+    }
+    else if (video.currentTime > 76 && video.currentTime <= 80) {
+        lyrics.innerHTML ="<h3>We will sing one song</h3>";
+    }
+    else if (video.currentTime > 80 && video.currentTime <= 84) {
+        lyrics.innerHTML ="<h3>For My Old Kentucky Home</h3>";
+    }
+    else if (video.currentTime > 84 && video.currentTime <= 93) {
+        lyrics.innerHTML ='<h3>For My Old Kentucky Home, far away</h3><img src="spongebobBye.jpeg" alt="Spongebob Says Goodbye" height="413" width = "500">';
+    }
+
+    else {
+	lyrics.innerHTML ="";
+    }
+    }, false);
+
+
+</script>
+</body>
+</html>

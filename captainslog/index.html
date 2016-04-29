@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Captain's Log</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>
+    <script>
+        $(function() {
+            //reload from local storage
+            function reload() {
+                output = "";
+                for (key in localStorage) {
+                    output = "<p>" + localStorage[key] + "</p>\n" + output;
+                }
+                $("#log").html(output);
+            }
+
+            //reload when page loads
+            var enterKey = 13;
+            reload();
+
+            //when you hit a key
+            $("#msg").keypress(function (event) {
+                function timeStamp() {
+                    var now = new Date();
+                    var m_num = now.getMonth();
+                    var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                                      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    var m = monthNames[m_num];
+
+                    var d = now.getDate();
+                    var t_h = now.getHours();
+                    var t_m = now.getMinutes();
+                    var t_s = now.getSeconds();
+                    var y = now.getFullYear();
+
+                    var log_string = m + " " + d + " " + t_h + ":" + t_m + ":" + t_s + " " + y;
+                    return log_string;
+                }
+
+                //when enter key is pressed, save the text box to localstorage and reload
+                if (event.which == enterKey) {
+                    var log = timeStamp() + " - " + $("#msg").val();
+                    localStorage[new Date().getTime()] = log;
+                    $("#msg").val("");
+                    reload();
+                }
+            });
+        })
+
+    </script>
+</head>
+
+<body>
+    <h1>Captain's Log</h1>
+    <h3>New entry: <input type="text" id="msg" name="msg" size="30" /></h3>
+    <div id="log"></div>
+</body>
+</html>
